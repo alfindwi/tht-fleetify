@@ -11,17 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attendance', function (Blueprint $table) {
+        Schema::create('attendance_histories', function (Blueprint $table) {
             $table->id();
             $table->string('employee_id', 50);
-            $table->string('attendance_id', 100)->unique();
-            $table->timestamp('clock_in')->nullable();
-            $table->timestamp('clock_out')->nullable();
+            $table->string('attendance_id', 100);
+            $table->timestamp('date_attendance');
+            $table->tinyInteger('attendance_type')->comment('1 = In, 2 = Out');
+            $table->text('description')->nullable();
             $table->timestamps();
 
             $table->foreign('employee_id')
                 ->references('employee_id')
                 ->on('employees')
+                ->onDelete('cascade');
+
+            $table->foreign('attendance_id')
+                ->references('attendance_id')
+                ->on('attendances')
                 ->onDelete('cascade');
         });
     }
@@ -31,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attendance');
+        Schema::dropIfExists('attendance_history');
     }
 };
